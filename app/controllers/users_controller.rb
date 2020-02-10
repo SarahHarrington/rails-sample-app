@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
-  
+
   def show
     @user = User.find(params[:id])
   end
-  
+
   def new
     @user = User.new
   end
@@ -13,13 +13,14 @@ class UsersController < ApplicationController
 
     if @user.save
       # rails autmoatically infers that we want to go to the user_url
+      log_in @user
       flash[:success] = "Welcome to the Sample App!"
       redirect_to @user
     else
       render 'new'
     end
   end
-  
+
   private
 
   def user_params
