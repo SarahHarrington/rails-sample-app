@@ -34,4 +34,8 @@ class User < ApplicationRecord
     #n it is not the same as the accessor defined initially
     BCrypt::Password.new(remember_digest).is_password?(remember_token)
   end
+
+  def forget
+    update_attribute(:remember_digest, nil)
+  end
 end
