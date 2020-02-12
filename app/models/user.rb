@@ -30,6 +30,8 @@ class User < ApplicationRecord
   end
 
   def authenticated?(remember_token)
+    #* return used explicitly here to indicate the rest of the method is ignored
+    return false if remember_digest.nil?
     #n the remember_token passed in is a variable for the method
     #n it is not the same as the accessor defined initially
     BCrypt::Password.new(remember_digest).is_password?(remember_token)
