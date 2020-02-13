@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
   before_action :logged_in_user, only: [:edit, :update]
+
+  #n by adding the filter w/ correct_user the search for the
+  #n user in edit & update isn't needed
   before_action :correct_user, only: [:edit, :update]
 
   def show
@@ -24,11 +27,11 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
+    # @user = User.find(params[:id])
   end
 
   def update
-    @user = User.find(params[:id])
+    # @user = User.find(params[:id])
     #* uses strong parameters to prevent mass assignment vulnerability
     if @user.update(user_params)
       flash[:success] = "Profile updated"
@@ -46,6 +49,7 @@ class UsersController < ApplicationController
 
   def logged_in_user
     unless logged_in?
+      store_location
       flash[:danger] = "Please log in."
       redirect_to login_url
     end
@@ -53,7 +57,6 @@ class UsersController < ApplicationController
 
   def correct_user
     @user = User.find(params[:id])
-    #! Review this
     redirect_to(root_url) unless current_user?(@user)
   end
 

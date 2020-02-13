@@ -15,7 +15,9 @@ class SessionsController < ApplicationController
       #* the log_in and remember methods are both in the sessions_helper
       log_in user
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      redirect_to user
+      redirect_back_or user
+      #* redirects don't happen until an explicit return or the end of the method
+      #* any code after the redirect is still executed
     else
       #n create an error message - flash is a built in thing
       #* flash.now makes it so it only displays on the page once
