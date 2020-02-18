@@ -22,7 +22,7 @@ module SessionsHelper
       #n If there is no session, it checks for a cookie user_id
       user = User.find_by(id: user_id)
       #n if the user is found, authentication occurs
-      if user && user.authenticated?(cookies[:remember_token])
+      if user && user.authenticated?(:remember, cookies[:remember_token])
         log_in user
         @current_user = user
       end

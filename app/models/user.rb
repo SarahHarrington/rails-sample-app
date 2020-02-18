@@ -23,6 +23,15 @@ class User < ApplicationRecord
     SecureRandom.urlsafe_base64
   end
 
+  def activate
+    update_attribute(:activated, true)
+    update_attribute(:activated_at, Time.zone.now)
+  end
+
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
+
   def remember
     #* without self, the assignment would create a local variable
     #* Using self ensure that assignemtn sets the user's remember_token attribute
@@ -31,12 +40,10 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, User.digest(remember_token))
   end
 
-  def authenticated?(remember_token)
-    #* return used explicitly here to indicate the rest of the method is ignored
-    return false if remember_digest.nil?
-    #n the remember_token passed in is a variable for the method
-    #n it is not the same as the accessor defined initially
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   def forget
