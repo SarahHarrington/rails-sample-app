@@ -1,5 +1,6 @@
 class MicropostsController < ApplicationController
   before_action :logged_in_user, only: [:create, :destroy]
+  before_action :correct_user, only: :destroy
 
   def create
     @micropost = current_user.microposts.build(micropost_params)
@@ -13,7 +14,10 @@ class MicropostsController < ApplicationController
   end
 
   def destroy
-
+    @micropost.destroy
+    flash[:success] = "Micropost delete"
+    #* This is friendly forwarding, it redirects back to the page that issued the delete
+    redirect_to request.referrer || root_url
   end
 
   private
@@ -22,5 +26,11 @@ class MicropostsController < ApplicationController
     #* this allows only the content to be modified via the web
     params.require(:micropost).permit(:content)
   end
+
+  def correct_user
+    @micropost = current_user.microposts.find_by(id: params[:id])
+    redirect_to root_url if @micropost.nil?
+  end
+
 
 end
