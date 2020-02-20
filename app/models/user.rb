@@ -60,4 +60,10 @@ class User < ApplicationRecord
     self.activation_token = User.new_token
     self.activation_digest = User.digest(activation_token)
   end
+
+  def feed
+    #* Using the question mark, ensures the id is escaped to prevent SQL injection
+    Micropost.where("user_id = ?", id)
+  end
+
 end
